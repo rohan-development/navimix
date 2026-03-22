@@ -1,22 +1,30 @@
-package main
+package api
 
-const deemix_base = "http://localhost:6595"
-const navidrome_base = "http://localhost:4533/"
+import "navimix/config"
+
+var navidrome_base string = ""
+var arl string = ""
+
+var Navidrome_base string = navidrome_base
 
 const deezer_search_base = "https://api.deezer.com/search?q="
+const deezer_api_base = "https://api.deezer.com/"
 
 type Response struct {
 	SubsonicResponse SubsonicResponse `json:"subsonic-response"`
 }
-
+type EmbeddedResponse struct {
+	Subsonic SubsonicResponse `json:"subsonic-response"`
+}
 type SubsonicResponse struct {
 	StatusCode    string        `json:"status"`
 	Version       string        `json:"version"`
 	Type          string        `json:"type"`
 	ServerVersion string        `json:"serverVersion"`
 	OpenSubsonic  bool          `json:"openSubsonic"`
-	SearchResult2 searchResult2 `json:"searchResult2,omitempty"`
-	Error         SubsonicError `json:"error,omitempty"`
+	SearchResult2 searchResult2 `json:"searchResult2,omitzero"`
+	SearchResult3 searchResult2 `json:"searchResult3,omitzero"`
+	Error         SubsonicError `json:"error,omitzero"`
 }
 
 type SubsonicError struct {
@@ -25,7 +33,9 @@ type SubsonicError struct {
 }
 
 type searchResult2 struct {
-	Song []Song `json:"song,omitempty"`
+	Artist []Artist `json:"artist,omitempty"`
+	Album  []Song   `json:"album,omitempty"`
+	Song   []Song   `json:"song,omitempty"`
 }
 
 type Song struct {
@@ -34,6 +44,7 @@ type Song struct {
 	IsDir              bool       `json:"isDir"`
 	Title              string     `json:"title"`
 	Album              string     `json:"album"`
+	Name               string     `json:"name,omitempty"`
 	Artist             string     `json:"artist"`
 	Track              int        `json:"track"`
 	Year               int        `json:"year"`
@@ -42,16 +53,16 @@ type Song struct {
 	Size               int        `json:"size"`
 	ContentType        string     `json:"contentType"`
 	Suffix             string     `json:"suffix"`
-	Duration           int        `json:"duration"`
+	Duration           int        `json:"duration,omitempty"`
 	BitRate            int        `json:"bitRate"`
-	Path               string     `json:"path"`
+	Path               string     `json:"path,omitempty"`
 	PlayCount          int        `json:"playCount"`
 	DiscNumber         int        `json:"discNumber"`
 	Created            string     `json:"created"`
 	AlbumID            string     `json:"albumId"`
 	ArtistID           string     `json:"artistId"`
 	Type               string     `json:"type"`
-	IsVideo            bool       `json:"isVideo"`
+	IsVideo            bool       `json:"isVideo,omitempty"`
 	Played             string     `json:"played"`
 	BPM                int        `json:"bpm"`
 	Comment            string     `json:"comment"`
@@ -93,8 +104,10 @@ type Mood struct {
 }
 
 type Artist struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	CoverArt string `json:"coverArt,omitempty"`
+	ImageUrl string `json:"artistImageUrl,omitempty"`
 }
 
 type deezer_response struct {
@@ -102,9 +115,13 @@ type deezer_response struct {
 }
 
 type deezer_album struct {
-	ID      int    `json:"id"`
-	Name    string `json:"title"`
-	Picture string `json:"cover_small"`
+	ID          int    `json:"id"`
+	Name        string `json:"title"`
+	Year        string `json:"release_date"`
+	CoverSmall  string `json:"cover_small"`
+	CoverMedium string `json:"cover_medium"`
+	CoverBig    string `json:"cover_big"`
+	CoverXL     string `json:"cover_xl"`
 }
 
 type deezer_artist struct {
@@ -114,11 +131,22 @@ type deezer_artist struct {
 }
 
 type deezer_data struct {
-	ID       int           `json:"id"`
-	Title    string        `json:"title"`
-	ISRC     string        `json:"isrc"`
-	Link     string        `json:"link"`
-	Duration int           `json:"duration"`
-	Artist   deezer_artist `json:"artist"`
-	Album    deezer_album  `json:"album"`
+	ID          int           `json:"id,omitempty"`
+	Title       string        `json:"title,omitempty"`
+	CoverSmall  string        `json:"cover_small,omitempty"`
+	CoverMedium string        `json:"cover_medium,omitempty"`
+	CoverBig    string        `json:"cover_big,omitempty"`
+	ISRC        string        `json:"isrc,omitempty"`
+	Link        string        `json:"link,omitempty"`
+	Duration    int           `json:"duration,omitempty"`
+	Artist      deezer_artist `json:"artist,omitempty"`
+	Album       deezer_album  `json:"album,omitempty"`
+}
+
+func Loadconfig(conf *config.Config) {
+	if conf.NavidromeAddress != "" {
+		navidrome_base = conf.NavidromeAddress
+		Navidrome_base = navidrome_base
+	}
+	arl = conf.DeezerARL
 }
