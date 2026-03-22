@@ -12,7 +12,7 @@ Current features (in addition your standard subsonic server) include:
 - Search any song outside of library (available on deezer) and have it playback via streaming
 - Fetch cover art for above songs
 
-Navimix acts as a translation integration layer between the deezer api, deemix, navidrome, and subsonic. It is designed to run on top of navidrome (or any compatible subsonic server) and add functionality. Navimix is still very much under development, with many new features being added. 
+Navimix acts as a translation integration layer between the deezer api, deemix, navidrome, and subsonic. It is designed to run on top of navidrome (or any compatible subsonic server) and add functionality. It is still very much under development, with many new features currently under development.
 
 Feel free to fork the repository or open a thread with suggested features!
 
