@@ -18,6 +18,7 @@ func Scrobble(artist, album, track, time, api string, submission bool) {
 		scrobble.ListenType = "single"
 		if time != "" {
 			scrobble.Payload[0].ListenedAt, _ = strconv.ParseInt(time, 10, 64)
+			scrobble.Payload[0].ListenedAt /= 1000 //Navidrome gives ms, convert to s
 		}
 	} else {
 		scrobble.ListenType = "playing_now"
