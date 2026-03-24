@@ -7,7 +7,6 @@ import (
 	//"navimix/internaldb"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func Search(writer http.ResponseWriter, req *http.Request) {
@@ -97,7 +96,7 @@ func album_in_search(main_search SubsonicResponse, add_album Album,
 	search_version int) bool {
 	if search_version == 2 {
 		for j := 0; j < len(main_search.SearchResult2.Album); j += 1 {
-			if add_album.Name == main_search.SearchResult2.Album[j].Name &&
+			if add_album.Title == main_search.SearchResult2.Album[j].Title &&
 				add_album.Artist == main_search.SearchResult2.Album[j].Artist {
 				return true
 			}
@@ -135,31 +134,14 @@ func artist_in_search(main_search SubsonicResponse, add_artist Artist,
 
 func extract_deezer_elements(main_search SubsonicResponse,
 	deezer_search []deezer.Data, num_elements, search_version int) SubsonicResponse {
-	var add_song Song
-	var add_album Album
+	//var add_song Song
 	var add_artist Artist
 	//var add_artist Artist
 	delta := 0
 	for i := 0; i+delta < num_elements; i += 1 {
 		switch deezer_search[i+delta].Type {
 		case "track":
-			add_song.ID = strconv.Itoa(deezer_search[i+delta].ID)
-			add_song.Title = deezer_search[i+delta].Title
-			add_song.Album = deezer_search[i+delta].Album.Name
-			add_song.Artist = deezer_search[i+delta].Artist.Name
-			add_song.AlbumID = strconv.Itoa(deezer_search[i+delta].Album.ID)
-			add_song.Parent = add_song.AlbumID
-			add_song.BitRate = 128
-			add_song.ContentType = "audio/mp3"
-			add_song.Suffix = "mp3"
-			// album := query_deezer_api("album/" + add_song.AlbumID)
-			// add_song.Year, _ = strconv.Atoi(album.Year[0:4])
-			// add_song.Genre = album.Genres.Data[0].Name
-			add_song.Duration = deezer_search[i+delta].Duration
-			add_song.SortName = strings.ToLower(add_song.Title)
-			add_song.Type = "music"
-			add_song.MediaType = "song"
-			add_song.DisplayArtist = add_song.Artist
+			add_song := populate_song(Song{}, deezer_search[i+delta])
 			if song_in_search(main_search, add_song, search_version) {
 				delta += 1
 				i -= 1
@@ -174,15 +156,9 @@ func extract_deezer_elements(main_search SubsonicResponse,
 					add_song)
 			}
 		case "album":
-			add_album.ID = strconv.Itoa(deezer_search[i+delta].ID)
-			add_album.Name = deezer_search[i+delta].Title
-			add_album.Artist = deezer_search[i+delta].Artist.Name
-			add_album.Parent = strconv.Itoa(deezer_search[i+delta].Artist.ID)
-			add_album.MediaType = "album"
-			add_album.DisplayArtist = add_album.Artist
-			// album := query_deezer_api("album/" + add_album.ID)
-			// add_album.Year, _ = strconv.Atoi(album.Year[0:4])
-			// add_album.Genre = album.Genres.Data[0].Name
+			//var add_album Album
+			//add_album = Album{}
+			add_album := populate_album(Album{}, deezer_search[i+delta])
 			if album_in_search(main_search, add_album, search_version) {
 				delta += 1
 				i -= 1

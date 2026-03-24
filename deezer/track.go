@@ -7,7 +7,7 @@ import (
 )
 
 func GetTrack(query string) Data {
-	url := deezer_api_base + "artist/" + query
+	url := deezer_api_base + "track/" + query
 	response, err := http.Get(url)
 	check_err(err)
 	data, err := io.ReadAll(response.Body)

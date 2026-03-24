@@ -16,3 +16,14 @@ func GetAlbum(query string) Album {
 	check_err(err)
 	return link
 }
+
+func GetAlbumSearch(query string) AlbumRef {
+	url := deezer_api_base + "album/" + query
+	response, err := http.Get(url)
+	check_err(err)
+	data, err := io.ReadAll(response.Body)
+	var link AlbumRef
+	err = json.Unmarshal(data, &link)
+	check_err(err)
+	return link
+}

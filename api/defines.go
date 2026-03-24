@@ -22,6 +22,9 @@ type SubsonicResponse struct {
 	SearchResult2 searchResult2 `json:"searchResult2,omitzero"`
 	SearchResult3 searchResult2 `json:"searchResult3,omitzero"`
 	Error         SubsonicError `json:"error,omitzero"`
+	Song          Song          `json:"song,omitzero"`
+	Album         Album         `json:"album,omitzero"`
+	Artist        Artist        `json:"artist,omitzero"`
 }
 
 type SubsonicError struct {
@@ -97,7 +100,7 @@ type Album struct {
 	Created             string         `json:"created"`
 	Comment             string         `json:"comment"`
 	ReplayGain          ReplayGain     `json:"replayGain"`
-	BPM                 int            `json:"bmp"`
+	BPM                 int            `json:"bpm"`
 	Year                int            `json:"year"`
 	Genre               string         `json:"genre"`
 	Played              string         `json:"played"`
@@ -117,6 +120,7 @@ type Album struct {
 	DisplayArtist       string         `json:"displayArtist"`
 	ExplicitStatus      string         `json:"explicitStatus"`
 	Version             string         `json:"version"`
+	Tracks              []Song         `json:"song,omitzero"`
 }
 
 type ArtistRef struct {

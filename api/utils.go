@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"navimix/deezer"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func forward_headers(response *http.Response, w http.ResponseWriter) {
@@ -87,21 +89,37 @@ func copy_file(src, dst string) error {
 	return out.Sync() // flush to disk
 }
 
-// func Fetch_base_data(w http.ResponseWriter, r *http.Request,
-// 	write_headers bool) (http.ResponseWriter, io.ReadCloser) {
-// 	//Gets base data (ie default data) from navidrome and returns it
-// 	upstream := navidrome_base + r.URL.Path[1:] + "?" + r.URL.RawQuery
-// 	req, err := http.NewRequest(r.Method, upstream, nil)
-// 	check_err(err)
-// 	//forward_headers(r, req, w)
-// 	//Forward range headers
-// 	if rangeHeader := r.Header.Get("Range"); rangeHeader != "" {
-// 		req.Header.Set("Range", rangeHeader)
-// 	}
-// 	response, err := http.DefaultClient.Do(req)
-// 	check_err(err)
-// 	if write_headers {
-// 		forward_headers(response, w)
-// 	}
-// 	return w, response.Body
-// }
+func populate_song(add_song Song, deezer_search deezer.Data) Song {
+	add_song.ID = strconv.Itoa(deezer_search.ID)
+	add_song.Title = deezer_search.Title
+	add_song.Album = deezer_search.Album.Name
+	add_song.Artist = deezer_search.Artist.Name
+	add_song.AlbumID = strconv.Itoa(deezer_search.Album.ID)
+	add_song.Parent = add_song.AlbumID
+	add_song.BitRate = 128
+	add_song.ContentType = "audio/mp3"
+	add_song.Suffix = "mp3"
+	// album := query_deezer_api("album/" + add_song.AlbumID)
+	// add_song.Year, _ = strconv.Atoi(album.Year[0:4])
+	// add_song.Genre = album.Genres.Data[0].Name
+	add_song.Duration = deezer_search.Duration
+	add_song.SortName = strings.ToLower(add_song.Title)
+	add_song.Type = "music"
+	add_song.MediaType = "song"
+	add_song.DisplayArtist = add_song.Artist
+	return add_song
+}
+
+func populate_album(add_album Album, deezer_search deezer.Data) Album {
+	add_album.ID = strconv.Itoa(deezer_search.ID)
+	add_album.Name = deezer_search.Title
+	add_album.Title = deezer_search.Title
+	add_album.Artist = deezer_search.Artist.Name
+	add_album.Parent = strconv.Itoa(deezer_search.Artist.ID)
+	add_album.MediaType = "album"
+	add_album.DisplayArtist = add_album.Artist
+	// album := query_deezer_api("album/" + add_album.ID)
+	// add_album.Year, _ = strconv.Atoi(album.Year[0:4])
+	// add_album.Genre = album.Genres.Data[0].Name
+	return add_album
+}

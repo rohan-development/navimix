@@ -32,14 +32,16 @@ func handler(writer http.ResponseWriter, r *http.Request) {
 	//api_call := r.URL.Path[6:]
 	api_call := strings.TrimPrefix(r.URL.Path, "/rest/")
 	routes := map[string]func(http.ResponseWriter, *http.Request){
-		"search2.view": api.Search,
-		"search3.view": api.Search,
-		"stream.view":  api.Stream,
-		//"download.view":    api.Stream,
+		"search2.view":     api.Search,
+		"search3.view":     api.Search,
+		"stream.view":      api.Stream,
+		"download.view":    api.Stream,
 		"getCoverArt.view": api.CoverArt,
+		"getSong.view":     api.GetSong,
+		"getAlbum.view":    api.GetAlbum,
 		//"getLyrics":        api.Lyrics,
 		//"scrobble":         api.Scrobble,
-		//"getSong":          api.GetSong,
+
 	}
 	routing, special_api := routes[api_call]
 	if special_api {
