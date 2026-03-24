@@ -10,15 +10,17 @@ Navimix is written entirely in GO, and runs exclusively as a backend. Its purpos
 Current features (in addition your standard subsonic server) include:
 
 - Search any song outside of library (available on deezer) and have it playback via streaming
-- Fetch cover art for above songs
+- Stream any album
+- Fetch cover art for above songs, albums
+- Find similar songs external to library in some clients through the getSimilar api function (unmodified)
 
 Navimix acts as a translation integration layer between the deezer api, deemix, navidrome, and subsonic. It is designed to run on top of navidrome (or any compatible subsonic server) and add functionality. It is still very much under development, with many new features currently under development.
 
 # Limitations
 Even the main branch is not quite stable yet, so there are a few limitations:
 
-- Only supports searching by songs. Anything in your library on the subsonic server still gets passed through, but only external songs can be searched
 - Only JSON formatted api calls are supported. This means that some clients cause navimix to crash, which is why it is not production-ready yet. I am using an IOS client called Arpeggi to test, and it works fine this way, but XML will be implemented soon.
+- No artist browsing support yet
 
 Feel free to fork the repository or open a thread with suggested features!
 
