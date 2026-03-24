@@ -107,7 +107,6 @@ type Album struct {
 	MusicBrainzID       string         `json:"musicBrainzId"`
 	IsCompilation       bool           `json:"isCompilation"`
 	SortName            string         `json:"sortName"`
-	DiscTitles          []string       `json:"discTitles"`
 	OriginalReleaseDate map[string]any `json:"originalReleaseDate"`
 	ReleaseDate         map[string]any `json:"releaseDate"`
 	ReleaseTypes        []string       `json:"releaseTypes"`
