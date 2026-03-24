@@ -2,11 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"io"
+	"navimix/deezer"
 
 	//"navimix/internaldb"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 )
@@ -21,20 +20,20 @@ func Search(writer http.ResponseWriter, req *http.Request) {
 	// 	request = request[1 : len(request)-1]
 	// }
 	main_search := Get_subsonic_response(writer, req, true)
-	track_search := search_deezer(request, "") //empty string = track
+	track_search := deezer.Search(request, "") //empty string = track
 	//var num_songs int
 	num_songs, _ := strconv.Atoi(req.URL.Query().Get("songCount"))
 	num_albums, _ := strconv.Atoi(req.URL.Query().Get("albumCount"))
 	num_artists, _ := strconv.Atoi(req.URL.Query().Get("artistCount"))
-	var album_search []deezer_data
-	var artist_search []deezer_data
+	var album_search []deezer.Data
+	var artist_search []deezer.Data
 
 	if num_albums > 0 {
-		album_search = search_deezer(request, "album")
+		album_search = deezer.Search(request, "album")
 	}
 
 	if num_artists > 0 {
-		artist_search = search_deezer(request, "artist")
+		artist_search = deezer.Search(request, "artist")
 	}
 
 	if len(artist_search) < num_artists {
@@ -73,21 +72,21 @@ func Search(writer http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(writer).Encode(embedded)
 }
 
-func search_deezer(query, attribute string) []deezer_data {
-	url := deezer_search_base + attribute +
-		"?q=" + url.QueryEscape(query)
-	// if attribute == "all" {
-	// 	url = deezer_search_base + url.QueryEscape(":"+query)
-	// }
-	response, err := http.Get(url)
-	check_err(err)
-	defer response.Body.Close()
-	data, err := io.ReadAll(response.Body)
-	var link deezer_response
-	err = json.Unmarshal(data, &link)
-	check_err(err)
-	return link.Data
-}
+// func search_deezer(query, attribute string) []deezer_data {
+// 	url := deezer_search_base + attribute +
+// 		"?q=" + url.QueryEscape(query)
+// 	// if attribute == "all" {
+// 	// 	url = deezer_search_base + url.QueryEscape(":"+query)
+// 	// }
+// 	response, err := http.Get(url)
+// 	check_err(err)
+// 	defer response.Body.Close()
+// 	data, err := io.ReadAll(response.Body)
+// 	var link deezer_response
+// 	err = json.Unmarshal(data, &link)
+// 	check_err(err)
+// 	return link.Data
+// }
 
 func song_in_search(main_search SubsonicResponse, add_song Song,
 	search_version int) bool {
@@ -151,7 +150,7 @@ func artist_in_search(main_search SubsonicResponse, add_artist Artist,
 }
 
 func extract_deezer_elements(main_search SubsonicResponse,
-	deezer_search []deezer_data, num_songs, search_version int) SubsonicResponse {
+	deezer_search []deezer.Data, num_songs, search_version int) SubsonicResponse {
 	var add_song Song
 	var add_album Song
 	var add_artist Artist

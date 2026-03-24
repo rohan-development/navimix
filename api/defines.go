@@ -7,9 +7,6 @@ var arl string = ""
 
 var Navidrome_base string = navidrome_base
 
-const deezer_search_base = "https://api.deezer.com/search/"
-const deezer_api_base = "https://api.deezer.com/"
-
 type Response struct {
 	SubsonicResponse SubsonicResponse `json:"subsonic-response"`
 }
@@ -149,56 +146,56 @@ type Artist struct {
 	ImageUrl string `json:"artistImageUrl,omitempty"`
 }
 
-type deezer_response struct {
-	Data []deezer_data `json:"data"`
-}
+// type deezer_response struct {
+// 	Data []deezer_data `json:"data"`
+// }
 
-type deezer_album struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"title"`
-	Year        string  `json:"release_date"`
-	Genres      DGenres `json:"genres,omitzero"`
-	CoverSmall  string  `json:"cover_small"`
-	CoverMedium string  `json:"cover_medium"`
-	CoverBig    string  `json:"cover_big"`
-	CoverXL     string  `json:"cover_xl"`
-}
+// type deezer_album struct {
+// 	ID          int     `json:"id"`
+// 	Name        string  `json:"title"`
+// 	Year        string  `json:"release_date"`
+// 	Genres      DGenres `json:"genres,omitzero"`
+// 	CoverSmall  string  `json:"cover_small"`
+// 	CoverMedium string  `json:"cover_medium"`
+// 	CoverBig    string  `json:"cover_big"`
+// 	CoverXL     string  `json:"cover_xl"`
+// }
 
-type Deezer_Genre struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Picture string `json:"picture"`
-	Type    string `json:"type"`
-}
+// type Deezer_Genre struct {
+// 	ID      int    `json:"id"`
+// 	Name    string `json:"name"`
+// 	Picture string `json:"picture"`
+// 	Type    string `json:"type"`
+// }
 
-type DGenres struct {
-	Data []Deezer_Genre `json:"data"`
-}
+// type DGenres struct {
+// 	Data []Deezer_Genre `json:"data"`
+// }
 
-type deezer_artist struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Picture string `json:"picture_small"`
-}
+// type deezer_artist struct {
+// 	ID      int    `json:"id"`
+// 	Name    string `json:"name"`
+// 	Picture string `json:"picture_small"`
+// }
 
-type deezer_data struct {
-	ID           int           `json:"id,omitempty"`
-	Title        string        `json:"title,omitempty"`
-	Name         string        `json:"name,omitempty"`
-	Cover        string        `json:"cover,omitempty"`
-	CoverSmall   string        `json:"cover_small,omitempty"`
-	CoverMedium  string        `json:"cover_medium,omitempty"`
-	CoverBig     string        `json:"cover_big,omitempty"`
-	ArtistSmall  string        `json:"picture_small,omitempty"`
-	ArtistMedium string        `json:"picture_medium,omitempty"`
-	ArtistBig    string        `json:"picture_big,omitempty"`
-	ISRC         string        `json:"isrc,omitempty"`
-	Link         string        `json:"link,omitempty"`
-	Duration     int           `json:"duration,omitempty"`
-	Artist       deezer_artist `json:"artist,omitzero"`
-	Album        deezer_album  `json:"album,omitzero"`
-	Type         string        `json:"type,omitzero"`
-}
+// type deezer_data struct {
+// 	ID           int           `json:"id,omitempty"`
+// 	Title        string        `json:"title,omitempty"`
+// 	Name         string        `json:"name,omitempty"`
+// 	Cover        string        `json:"cover,omitempty"`
+// 	CoverSmall   string        `json:"cover_small,omitempty"`
+// 	CoverMedium  string        `json:"cover_medium,omitempty"`
+// 	CoverBig     string        `json:"cover_big,omitempty"`
+// 	ArtistSmall  string        `json:"picture_small,omitempty"`
+// 	ArtistMedium string        `json:"picture_medium,omitempty"`
+// 	ArtistBig    string        `json:"picture_big,omitempty"`
+// 	ISRC         string        `json:"isrc,omitempty"`
+// 	Link         string        `json:"link,omitempty"`
+// 	Duration     int           `json:"duration,omitempty"`
+// 	Artist       deezer_artist `json:"artist,omitzero"`
+// 	Album        deezer_album  `json:"album,omitzero"`
+// 	Type         string        `json:"type,omitzero"`
+// }
 
 func Loadconfig(conf *config.Config) {
 	if conf.NavidromeAddress != "" {

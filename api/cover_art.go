@@ -1,8 +1,8 @@
 package api
 
 import (
-	"encoding/json"
 	"io"
+	"navimix/deezer"
 	"net/http"
 	"strconv"
 )
@@ -17,7 +17,8 @@ func CoverArt(writer http.ResponseWriter, req *http.Request) {
 		io.Copy(writer, response)
 	} else {
 		var art_link string
-		album := query_deezer_api("album/" + id)
+		album := deezer.GetAlbum(id)
+		//album := query_deezer_api("album/" + id)
 		quality, err := strconv.Atoi(req.URL.Query().Get("size"))
 		if err == nil {
 			if quality < 60 {
@@ -48,19 +49,4 @@ func CoverArt(writer http.ResponseWriter, req *http.Request) {
 	}
 	//deezer_info = query_deezer_api(id).Album.Cover
 
-}
-
-func query_deezer_api(query string) deezer_album {
-	url := deezer_api_base + query
-	// if attribute == "all" {
-	// 	url = deezer_search_base + url.QueryEscape(":"+query)
-	// }
-
-	response, err := http.Get(url)
-	check_err(err)
-	data, err := io.ReadAll(response.Body)
-	var link deezer_album
-	err = json.Unmarshal(data, &link)
-	check_err(err)
-	return link
 }
