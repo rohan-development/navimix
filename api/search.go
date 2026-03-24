@@ -50,13 +50,13 @@ func Search(writer http.ResponseWriter, req *http.Request) {
 	if main_search.StatusCode != "failed" {
 		main_search = extract_deezer_elements(main_search, track_search, num_songs,
 			search_version)
-		// if search_version == 2 && num_albums > 0 {
-		// 	main_search.SearchResult2.Album = extract_deezer_elements(main_search,
-		// 		album_search, num_albums, search_version).SearchResult2.Album
-		// } else if num_albums > 0 {
-		// 	main_search.SearchResult3.Album = extract_deezer_elements(main_search,
-		// 		album_search, num_albums, search_version).SearchResult3.Album
-		// }
+		if search_version == 2 && num_albums > 0 {
+			main_search.SearchResult2.Album = extract_deezer_elements(main_search,
+				album_search, num_albums, search_version).SearchResult2.Album
+		} else if num_albums > 0 {
+			main_search.SearchResult3.Album = extract_deezer_elements(main_search,
+				album_search, num_albums, search_version).SearchResult3.Album
+		}
 
 		if search_version == 2 && num_artists > 0 {
 			main_search.SearchResult2.Artist = extract_deezer_elements(main_search,
