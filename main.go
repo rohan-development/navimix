@@ -7,6 +7,7 @@ import (
 	"navimix/auth"
 	"navimix/config"
 	"navimix/deemix"
+	"navimix/listenbrainz"
 	"strings"
 
 	//_ "navimix/internaldb"
@@ -22,6 +23,7 @@ func main() {
 	}
 	deemix.Loadconfig(config)
 	api.Loadconfig(config)
+	listenbrainz.Loadconfig(config)
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":"+config.Port, nil)
 	//deemix.Config(config)
@@ -39,8 +41,8 @@ func handler(writer http.ResponseWriter, r *http.Request) {
 		"getCoverArt.view": api.CoverArt,
 		"getSong.view":     api.GetSong,
 		"getAlbum.view":    api.GetAlbum,
+		"scrobble.view":    api.Scrobble,
 		//"getLyrics":        api.Lyrics,
-		//"scrobble":         api.Scrobble,
 
 	}
 	routing, special_api := routes[api_call]

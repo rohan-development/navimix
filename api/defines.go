@@ -4,6 +4,8 @@ import "navimix/config"
 
 var navidrome_base string = ""
 var arl string = ""
+var listenbrainz_api string = ""
+var listenbrainz_enabled bool = false
 
 var Navidrome_base string = navidrome_base
 
@@ -163,4 +165,6 @@ func Loadconfig(conf *config.Config) {
 		Navidrome_base = navidrome_base
 	}
 	arl = conf.DeezerARL
+	listenbrainz_api = conf.ListenbrainzAuth
+	listenbrainz_enabled = conf.ListenbrainzEnabled
 }

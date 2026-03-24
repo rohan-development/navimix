@@ -1,7 +1,10 @@
 package api
 
 import (
+	"encoding/json"
 	"io"
+	"navimix/deezer"
+	"navimix/listenbrainz"
 	"net/http"
 )
 
@@ -13,7 +16,19 @@ func Scrobble(writer http.ResponseWriter, req *http.Request) {
 		writer, response := Passthrough_proxy(writer, req, true, upstream)
 		defer response.Close()
 		io.Copy(writer, response)
-	} else {
-		//album := deezer.GetTrack(id)
+		return
+	} else if listenbrainz_enabled {
+		track := deezer.GetTrack(id)
+		switch req.URL.Query().Get("submission") {
+		case "true", "":
+			listenbrainz.Scrobble(track.Artist.Name, track.Album.Name,
+				track.Title, req.URL.Query().Get("time"), listenbrainz_api, true)
+		case "false":
+			listenbrainz.Scrobble(track.Artist.Name, track.Album.Name,
+				track.Title, "", listenbrainz_api, false)
+		}
 	}
+	var embedded EmbeddedResponse
+	embedded.Subsonic = Get_subsonic_response(writer, req, true)
+	json.NewEncoder(writer).Encode(embedded)
 }

@@ -1,8 +1,11 @@
 package config
 
 type Config struct {
-	Port             string
-	NavidromeAddress string
-	DeemixTmp        string
-	DeezerARL        string
+	Port                string
+	NavidromeAddress    string
+	DeemixTmp           string
+	DeezerARL           string
+	ListenbrainzEnabled bool
+	ListenbrainzAuth    string
+	ListenbrainzAddress string
 }
