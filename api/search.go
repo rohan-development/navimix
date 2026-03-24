@@ -72,22 +72,6 @@ func Search(writer http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(writer).Encode(embedded)
 }
 
-// func search_deezer(query, attribute string) []deezer_data {
-// 	url := deezer_search_base + attribute +
-// 		"?q=" + url.QueryEscape(query)
-// 	// if attribute == "all" {
-// 	// 	url = deezer_search_base + url.QueryEscape(":"+query)
-// 	// }
-// 	response, err := http.Get(url)
-// 	check_err(err)
-// 	defer response.Body.Close()
-// 	data, err := io.ReadAll(response.Body)
-// 	var link deezer_response
-// 	err = json.Unmarshal(data, &link)
-// 	check_err(err)
-// 	return link.Data
-// }
-
 func song_in_search(main_search SubsonicResponse, add_song Song,
 	search_version int) bool {
 	if search_version == 2 {
@@ -109,11 +93,11 @@ func song_in_search(main_search SubsonicResponse, add_song Song,
 
 }
 
-func album_in_search(main_search SubsonicResponse, add_album Song,
+func album_in_search(main_search SubsonicResponse, add_album Album,
 	search_version int) bool {
 	if search_version == 2 {
 		for j := 0; j < len(main_search.SearchResult2.Album); j += 1 {
-			if add_album.Title == main_search.SearchResult2.Album[j].Title &&
+			if add_album.Name == main_search.SearchResult2.Album[j].Name &&
 				add_album.Artist == main_search.SearchResult2.Album[j].Artist {
 				return true
 			}
@@ -121,7 +105,7 @@ func album_in_search(main_search SubsonicResponse, add_album Song,
 		return false
 	}
 	for j := 0; j < len(main_search.SearchResult3.Album); j += 1 {
-		if add_album.Title == main_search.SearchResult3.Album[j].Title &&
+		if add_album.Name == main_search.SearchResult3.Album[j].Name &&
 			add_album.Artist == main_search.SearchResult3.Album[j].Artist {
 			return true
 		}
@@ -150,13 +134,13 @@ func artist_in_search(main_search SubsonicResponse, add_artist Artist,
 }
 
 func extract_deezer_elements(main_search SubsonicResponse,
-	deezer_search []deezer.Data, num_songs, search_version int) SubsonicResponse {
+	deezer_search []deezer.Data, num_elements, search_version int) SubsonicResponse {
 	var add_song Song
-	var add_album Song
+	var add_album Album
 	var add_artist Artist
 	//var add_artist Artist
 	delta := 0
-	for i := 0; i+delta < num_songs; i += 1 {
+	for i := 0; i+delta < num_elements; i += 1 {
 		switch deezer_search[i+delta].Type {
 		case "track":
 			add_song.ID = strconv.Itoa(deezer_search[i+delta].ID)
@@ -191,7 +175,7 @@ func extract_deezer_elements(main_search SubsonicResponse,
 			}
 		case "album":
 			add_album.ID = strconv.Itoa(deezer_search[i+delta].ID)
-			add_album.Title = deezer_search[i+delta].Title
+			add_album.Name = deezer_search[i+delta].Title
 			add_album.Artist = deezer_search[i+delta].Artist.Name
 			add_album.Parent = strconv.Itoa(deezer_search[i+delta].Artist.ID)
 			add_album.MediaType = "album"
@@ -245,24 +229,3 @@ func extract_deezer_elements(main_search SubsonicResponse,
 	return main_search
 
 }
-
-// func Search3(writer http.ResponseWriter, req *http.Request) {
-// 	request := req.URL.Query().Get("query")
-// 	if len(request) > 0 {
-// 		request = request[1 : len(request)-1]
-// 	}
-// 	main_search := get_subsonic_response(writer, req, true)
-// 	deezer_search := search_deezer(request)
-// 	var num_songs int
-// 	if len(deezer_search) < num_deezer_songs {
-// 		num_songs = len(deezer_search)
-// 	} else {
-// 		num_songs = num_deezer_songs
-// 	}
-// 	if main_search.StatusCode != "failed" {
-// 		main_search = extract_deezer_search(main_search, deezer_search, num_songs, 3)
-// 	}
-// 	var embedded EmbeddedResponse
-// 	embedded.Subsonic = main_search
-// 	json.NewEncoder(writer).Encode(embedded)
-// }

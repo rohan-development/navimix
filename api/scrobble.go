@@ -14,6 +14,6 @@ func Scrobble(writer http.ResponseWriter, req *http.Request) {
 		defer response.Close()
 		io.Copy(writer, response)
 	} else {
-
+		//album := deezer.GetTrack(id)
 	}
 }

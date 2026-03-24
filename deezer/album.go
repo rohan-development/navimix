@@ -8,10 +8,6 @@ import (
 
 func GetAlbum(query string) Album {
 	url := deezer_api_base + "album/" + query
-	// if attribute == "all" {
-	// 	url = deezer_search_base + url.QueryEscape(":"+query)
-	// }
-
 	response, err := http.Get(url)
 	check_err(err)
 	data, err := io.ReadAll(response.Body)

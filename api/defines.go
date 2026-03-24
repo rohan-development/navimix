@@ -31,7 +31,7 @@ type SubsonicError struct {
 
 type searchResult2 struct {
 	Artist []Artist `json:"artist,omitempty"`
-	Album  []Song   `json:"album,omitempty"`
+	Album  []Album  `json:"album,omitempty"`
 	Song   []Song   `json:"song,omitempty"`
 }
 
@@ -84,6 +84,9 @@ type Song struct {
 
 type Album struct {
 	ID                  string         `json:"id"`
+	Parent              string         `json:"parent"`
+	IsDir               bool           `json:"isDir"`
+	Title               string         `json:"title"`
 	Name                string         `json:"name"`
 	Artist              string         `json:"artist"`
 	ArtistID            string         `json:"artistId"`
@@ -92,11 +95,15 @@ type Album struct {
 	Duration            int            `json:"duration"`
 	PlayCount           int            `json:"playCount"`
 	Created             string         `json:"created"`
+	Comment             string         `json:"comment"`
+	ReplayGain          ReplayGain     `json:"replayGain"`
+	BPM                 int            `json:"bmp"`
 	Year                int            `json:"year"`
 	Genre               string         `json:"genre"`
 	Played              string         `json:"played"`
 	UserRating          int            `json:"userRating"`
 	Genres              []Genre        `json:"genres"`
+	MediaType           string         `json:"mediaType"`
 	MusicBrainzID       string         `json:"musicBrainzId"`
 	IsCompilation       bool           `json:"isCompilation"`
 	SortName            string         `json:"sortName"`
@@ -107,6 +114,7 @@ type Album struct {
 	RecordLabels        []Label        `json:"recordLabels"`
 	Moods               []string       `json:"moods"`
 	Artists             []ArtistRef    `json:"artists"`
+	AlbumArtists        []ArtistRef    `json:"albumArtists"`
 	DisplayArtist       string         `json:"displayArtist"`
 	ExplicitStatus      string         `json:"explicitStatus"`
 	Version             string         `json:"version"`
@@ -145,57 +153,6 @@ type Artist struct {
 	CoverArt string `json:"coverArt,omitempty"`
 	ImageUrl string `json:"artistImageUrl,omitempty"`
 }
-
-// type deezer_response struct {
-// 	Data []deezer_data `json:"data"`
-// }
-
-// type deezer_album struct {
-// 	ID          int     `json:"id"`
-// 	Name        string  `json:"title"`
-// 	Year        string  `json:"release_date"`
-// 	Genres      DGenres `json:"genres,omitzero"`
-// 	CoverSmall  string  `json:"cover_small"`
-// 	CoverMedium string  `json:"cover_medium"`
-// 	CoverBig    string  `json:"cover_big"`
-// 	CoverXL     string  `json:"cover_xl"`
-// }
-
-// type Deezer_Genre struct {
-// 	ID      int    `json:"id"`
-// 	Name    string `json:"name"`
-// 	Picture string `json:"picture"`
-// 	Type    string `json:"type"`
-// }
-
-// type DGenres struct {
-// 	Data []Deezer_Genre `json:"data"`
-// }
-
-// type deezer_artist struct {
-// 	ID      int    `json:"id"`
-// 	Name    string `json:"name"`
-// 	Picture string `json:"picture_small"`
-// }
-
-// type deezer_data struct {
-// 	ID           int           `json:"id,omitempty"`
-// 	Title        string        `json:"title,omitempty"`
-// 	Name         string        `json:"name,omitempty"`
-// 	Cover        string        `json:"cover,omitempty"`
-// 	CoverSmall   string        `json:"cover_small,omitempty"`
-// 	CoverMedium  string        `json:"cover_medium,omitempty"`
-// 	CoverBig     string        `json:"cover_big,omitempty"`
-// 	ArtistSmall  string        `json:"picture_small,omitempty"`
-// 	ArtistMedium string        `json:"picture_medium,omitempty"`
-// 	ArtistBig    string        `json:"picture_big,omitempty"`
-// 	ISRC         string        `json:"isrc,omitempty"`
-// 	Link         string        `json:"link,omitempty"`
-// 	Duration     int           `json:"duration,omitempty"`
-// 	Artist       deezer_artist `json:"artist,omitzero"`
-// 	Album        deezer_album  `json:"album,omitzero"`
-// 	Type         string        `json:"type,omitzero"`
-// }
 
 func Loadconfig(conf *config.Config) {
 	if conf.NavidromeAddress != "" {

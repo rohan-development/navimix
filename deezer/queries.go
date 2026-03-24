@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-func search_deezer(query, attribute string) []Data {
+func Search(query, attribute string) []Data {
 	url := deezer_search_base + attribute +
 		"?q=" + url.QueryEscape(query)
 	// if attribute == "all" {

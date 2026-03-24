@@ -11,7 +11,7 @@ func GetArtist(query string) Artist {
 	response, err := http.Get(url)
 	check_err(err)
 	data, err := io.ReadAll(response.Body)
-	var link Album
+	var link Artist
 	err = json.Unmarshal(data, &link)
 	check_err(err)
 	return link
