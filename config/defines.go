@@ -8,4 +8,5 @@ type Config struct {
 	ListenbrainzEnabled bool
 	ListenbrainzAuth    string
 	ListenbrainzAddress string
+	ListenbrainzUser    string
 }

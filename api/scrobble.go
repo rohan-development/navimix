@@ -17,7 +17,7 @@ func Scrobble(writer http.ResponseWriter, req *http.Request) {
 		defer response.Close()
 		io.Copy(writer, response)
 		return
-	} else if listenbrainz_enabled {
+	} else if listenbrainz_enabled && req.URL.Query().Get("u") == listenbrainz_user {
 		track := deezer.GetTrack(id)
 		switch req.URL.Query().Get("submission") {
 		case "true", "":

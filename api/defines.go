@@ -6,6 +6,7 @@ var navidrome_base string = ""
 var arl string = ""
 var listenbrainz_api string = ""
 var listenbrainz_enabled bool = false
+var listenbrainz_user string = ""
 
 var Navidrome_base string = navidrome_base
 
@@ -167,4 +168,5 @@ func Loadconfig(conf *config.Config) {
 	arl = conf.DeezerARL
 	listenbrainz_api = conf.ListenbrainzAuth
 	listenbrainz_enabled = conf.ListenbrainzEnabled
+	listenbrainz_user = conf.ListenbrainzUser
 }
