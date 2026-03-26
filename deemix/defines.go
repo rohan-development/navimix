@@ -1,9 +1,5 @@
 package deemix
 
-import "navimix/config"
-
-var deemix_tmp string = "http://localhost:6596/"
-
 type Deemix struct {
 	Arl     string `json:"arl"`
 	Force   bool   `json:"force"`
@@ -47,10 +43,4 @@ type FileData struct {
 	ID     string `json:"id"`
 	Title  string `json:"title"`
 	Artist string `json:"artist"`
-}
-
-func Loadconfig(conf *config.Config) {
-	if conf.DeemixTmp != "" {
-		deemix_tmp = conf.DeemixTmp
-	}
 }

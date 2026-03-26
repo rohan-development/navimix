@@ -7,14 +7,16 @@ import (
 	"net/http/cookiejar"
 )
 
-var Client *http.Client
+//var Client *http.Client
 
 func init() {
-	jar, _ := cookiejar.New(nil)
-	Client = &http.Client{Jar: jar}
+
 }
 
-func Login(arl string) {
+func Login(arl, address string) *http.Client {
+	var Client *http.Client
+	jar, _ := cookiejar.New(nil)
+	Client = &http.Client{Jar: jar}
 	var request Deemix
 	request.Arl = arl
 	request.Child = 0
@@ -24,7 +26,7 @@ func Login(arl string) {
 	// Client = &http.Client{Jar: jar}
 	jsonBytes, err := json.Marshal(request)
 	check_err(err)
-	resp, err := Client.Post(deemix_tmp+"api/loginArl", "application/json", bytes.NewBuffer(jsonBytes))
+	resp, err := Client.Post(address+"api/loginArl", "application/json", bytes.NewBuffer(jsonBytes))
 	check_err(err)
 	//io.ReadAll(resp.Body)
 	defer resp.Body.Close()
@@ -33,15 +35,16 @@ func Login(arl string) {
 
 	// // Print it
 	// fmt.Println(string(body))
+	return Client
 }
 
-func AddToQueue(id string) {
+func AddToQueue(id, address string, Client *http.Client) {
 	var requests Deemix
 	requests.Url = "https://deezer.com/track/" + id
 
 	jsonBytes, err := json.Marshal(requests)
 	check_err(err)
-	resp, err := Client.Post(deemix_tmp+"api/addToQueue", "application/json", bytes.NewBuffer(jsonBytes))
+	resp, err := Client.Post(address+"api/addToQueue", "application/json", bytes.NewBuffer(jsonBytes))
 	check_err(err)
 	defer resp.Body.Close()
 	// body, err := io.ReadAll(resp.Body)
@@ -51,8 +54,8 @@ func AddToQueue(id string) {
 	// fmt.Println(string(body))
 }
 
-func IsDone(id string) bool {
-	resp, err := Client.Get(deemix_tmp + "api/getQueue")
+func IsDone(id, address string, Client *http.Client) bool {
+	resp, err := Client.Get(address + "api/getQueue")
 	check_err(err)
 	defer resp.Body.Close()
 	var data Root

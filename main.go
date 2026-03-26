@@ -6,7 +6,6 @@ import (
 	"navimix/api"
 	"navimix/auth"
 	"navimix/config"
-	"navimix/deemix"
 	"navimix/listenbrainz"
 	"strings"
 
@@ -21,7 +20,7 @@ func main() {
 	if config.Port == "" {
 		config.Port = "4534"
 	}
-	deemix.Loadconfig(config)
+	//deemix.Loadconfig(config)
 	api.Loadconfig(config)
 	listenbrainz.Loadconfig(config)
 	http.HandleFunc("/", handler)

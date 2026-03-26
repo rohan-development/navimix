@@ -34,10 +34,10 @@ func Stream(writer http.ResponseWriter, req *http.Request) {
 		new := false
 		if err != nil {
 			new = true
-			deemix.Login(arl)
-			deemix.AddToQueue(id)
+			client := deemix.Login(arl, deemix_tmp)
+			deemix.AddToQueue(id, deemix_tmp, client)
 			file = filepath.Join("downloads", id+".mp3")
-			for !deemix.IsDone(id) {
+			for !deemix.IsDone(id, deemix_tmp, client) {
 				time.Sleep(SLEEP_TIME * time.Millisecond)
 			}
 		}
