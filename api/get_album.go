@@ -21,8 +21,8 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 	} else {
 		var album types.Album
 		deezer_search, err := db.GetAlbum(id)
+		deezer_search = deezer.GetAlbum(id)
 		if err != nil {
-			deezer_search = deezer.GetAlbum(id)
 			db.AddAlbum(deezer_search)
 		}
 		album.ID = strconv.Itoa(deezer_search.ID)

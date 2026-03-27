@@ -77,7 +77,7 @@ func song_in_search(main_search SubsonicResponse, add_song types.Song,
 	if search_version == 2 {
 		for j := 0; j < len(main_search.SearchResult2.Song); j += 1 {
 			if add_song.Title == main_search.SearchResult2.Song[j].Title &&
-				add_song.Artist == main_search.SearchResult2.Song[j].Artist {
+				add_song.Artist == main_search.SearchResult2.Song[j].DisplayArtist {
 				return true
 			}
 		}
@@ -85,7 +85,7 @@ func song_in_search(main_search SubsonicResponse, add_song types.Song,
 	}
 	for j := 0; j < len(main_search.SearchResult3.Song); j += 1 {
 		if add_song.Title == main_search.SearchResult3.Song[j].Title &&
-			add_song.Artist == main_search.SearchResult3.Song[j].Artist {
+			add_song.Artist == main_search.SearchResult3.Song[j].DisplayArtist {
 			return true
 		}
 	}
@@ -98,7 +98,7 @@ func album_in_search(main_search SubsonicResponse, add_album types.Album,
 	if search_version == 2 {
 		for j := 0; j < len(main_search.SearchResult2.Album); j += 1 {
 			if add_album.Title == main_search.SearchResult2.Album[j].Title &&
-				add_album.Artist == main_search.SearchResult2.Album[j].Artist {
+				add_album.Artist == main_search.SearchResult2.Album[j].DisplayArtist {
 				return true
 			}
 		}
@@ -106,7 +106,7 @@ func album_in_search(main_search SubsonicResponse, add_album types.Album,
 	}
 	for j := 0; j < len(main_search.SearchResult3.Album); j += 1 {
 		if add_album.Name == main_search.SearchResult3.Album[j].Name &&
-			add_album.Artist == main_search.SearchResult3.Album[j].Artist {
+			add_album.Artist == main_search.SearchResult3.Album[j].DisplayArtist {
 			return true
 		}
 	}
