@@ -22,10 +22,11 @@ func Scrobble(writer http.ResponseWriter, req *http.Request) {
 		switch req.URL.Query().Get("submission") {
 		case "true", "":
 			listenbrainz.Scrobble(track.Artist.Name, track.Album.Name,
-				track.Title, req.URL.Query().Get("time"), listenbrainz_api, true)
+				track.Title, req.URL.Query().Get("time"), listenbrainz_api,
+				track.Duration, true)
 		case "false":
 			listenbrainz.Scrobble(track.Artist.Name, track.Album.Name,
-				track.Title, "", listenbrainz_api, false)
+				track.Title, "", listenbrainz_api, track.Duration, false)
 		}
 	}
 	var embedded EmbeddedResponse

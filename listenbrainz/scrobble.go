@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func Scrobble(artist, album, track, time, api string, submission bool) {
+func Scrobble(artist, album, track, time, api string, duration int, submission bool) {
 	var payload []byte
 	//unix_time := strconv.Itoa(time)
 
@@ -26,6 +26,7 @@ func Scrobble(artist, album, track, time, api string, submission bool) {
 	scrobble.Payload[0].TrackMetadata.ReleaseName = album
 	scrobble.Payload[0].TrackMetadata.ArtistName = artist
 	scrobble.Payload[0].TrackMetadata.TrackName = track
+	scrobble.Payload[0].TrackMetadata.AdditionalInfo.DurationMS = duration
 	payload, err := json.Marshal(scrobble)
 	if err != nil {
 		panic(err)
