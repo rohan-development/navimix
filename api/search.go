@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"navimix/deezer"
+	"navimix/types"
 
 	//"navimix/internaldb"
 	"net/http"
@@ -71,7 +72,7 @@ func Search(writer http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(writer).Encode(embedded)
 }
 
-func song_in_search(main_search SubsonicResponse, add_song Song,
+func song_in_search(main_search SubsonicResponse, add_song types.Song,
 	search_version int) bool {
 	if search_version == 2 {
 		for j := 0; j < len(main_search.SearchResult2.Song); j += 1 {
@@ -92,7 +93,7 @@ func song_in_search(main_search SubsonicResponse, add_song Song,
 
 }
 
-func album_in_search(main_search SubsonicResponse, add_album Album,
+func album_in_search(main_search SubsonicResponse, add_album types.Album,
 	search_version int) bool {
 	if search_version == 2 {
 		for j := 0; j < len(main_search.SearchResult2.Album); j += 1 {
@@ -113,7 +114,7 @@ func album_in_search(main_search SubsonicResponse, add_album Album,
 
 }
 
-func artist_in_search(main_search SubsonicResponse, add_artist Artist,
+func artist_in_search(main_search SubsonicResponse, add_artist types.Artist,
 	search_version int) bool {
 	if search_version == 2 {
 		for j := 0; j < len(main_search.SearchResult2.Artist); j += 1 {
@@ -135,13 +136,13 @@ func artist_in_search(main_search SubsonicResponse, add_artist Artist,
 func extract_deezer_elements(main_search SubsonicResponse,
 	deezer_search []deezer.Data, num_elements, search_version int) SubsonicResponse {
 	//var add_song Song
-	var add_artist Artist
+	var add_artist types.Artist
 	//var add_artist Artist
 	delta := 0
 	for i := 0; i+delta < num_elements; i += 1 {
 		switch deezer_search[i+delta].Type {
 		case "track":
-			add_song := populate_song(Song{}, deezer_search[i+delta])
+			add_song := populate_song(types.Song{}, deezer_search[i+delta])
 			if song_in_search(main_search, add_song, search_version) {
 				delta += 1
 				i -= 1
@@ -158,7 +159,7 @@ func extract_deezer_elements(main_search SubsonicResponse,
 		case "album":
 			//var add_album Album
 			//add_album = Album{}
-			add_album := populate_album(Album{}, deezer_search[i+delta])
+			add_album := populate_album(types.Album{}, deezer_search[i+delta])
 			if album_in_search(main_search, add_album, search_version) {
 				delta += 1
 				i -= 1

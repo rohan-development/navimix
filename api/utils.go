@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"navimix/deezer"
+	"navimix/types"
 	"net/http"
 	"os"
 	"strconv"
@@ -89,7 +90,7 @@ func copy_file(src, dst string) error {
 	return out.Sync() // flush to disk
 }
 
-func populate_song(add_song Song, deezer_search deezer.Data) Song {
+func populate_song(add_song types.Song, deezer_search deezer.Data) types.Song {
 	add_song.ID = strconv.Itoa(deezer_search.ID)
 	add_song.Title = deezer_search.Title
 	add_song.Album = deezer_search.Album.Name
@@ -110,7 +111,7 @@ func populate_song(add_song Song, deezer_search deezer.Data) Song {
 	return add_song
 }
 
-func populate_album(add_album Album, deezer_search deezer.Data) Album {
+func populate_album(add_album types.Album, deezer_search deezer.Data) types.Album {
 	add_album.ID = strconv.Itoa(deezer_search.ID)
 	add_album.Name = deezer_search.Title
 	add_album.Title = deezer_search.Title

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"navimix/deezer"
+	"navimix/types"
 	"net/http"
 	"strconv"
 )
@@ -17,7 +18,7 @@ func GetSong(writer http.ResponseWriter, req *http.Request) {
 		defer response.Close()
 		io.Copy(writer, response)
 	} else {
-		var track Song
+		var track types.Song
 		track = populate_song(track, deezer.GetTrack(id))
 		if track.Album == "" && track.Title == "" {
 			upstream := navidrome_base + req.URL.Path[1:] + "?" + req.URL.RawQuery

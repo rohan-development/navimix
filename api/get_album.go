@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"navimix/deezer"
+	"navimix/types"
 	"net/http"
 	"strconv"
 )
@@ -17,7 +18,7 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 		defer response.Close()
 		io.Copy(writer, response)
 	} else {
-		var album Album
+		var album types.Album
 		deezer_search := deezer.GetAlbum(id)
 		album.ID = strconv.Itoa(deezer_search.ID)
 		album.Name = deezer_search.Name
@@ -38,7 +39,7 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 		album.Genre = deezer_search.Genres.Data[0].Name
 		album.CoverArt = album.ID
 		for i := 0; i < album.SongCount; i += 1 {
-			var add_song Song
+			var add_song types.Song
 			add_song.Track = i + 1
 			album.Tracks = append(album.Tracks,
 				populate_song(add_song, deezer_search.Tracks.Data[i]))
