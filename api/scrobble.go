@@ -23,10 +23,10 @@ func Scrobble(writer http.ResponseWriter, req *http.Request) {
 		case "true", "":
 			listenbrainz.Scrobble(track.Artist.Name, track.Album.Name,
 				track.Title, req.URL.Query().Get("time"), listenbrainz_api,
-				track.Duration, true)
+				track.Duration*1000, true)
 		case "false":
 			listenbrainz.Scrobble(track.Artist.Name, track.Album.Name,
-				track.Title, "", listenbrainz_api, track.Duration, false)
+				track.Title, "", listenbrainz_api, track.Duration*1000, false)
 		}
 	}
 	var embedded EmbeddedResponse
