@@ -41,6 +41,7 @@ func handler(writer http.ResponseWriter, r *http.Request) {
 		"getSong.view":     api.GetSong,
 		"getAlbum.view":    api.GetAlbum,
 		"scrobble.view":    api.Scrobble,
+		"setRating.view":   api.SetRating,
 		//"getLyrics":        api.Lyrics,
 
 	}

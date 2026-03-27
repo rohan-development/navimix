@@ -4,6 +4,7 @@ import "navimix/config"
 
 var navidrome_base string = ""
 var deemix_tmp string = "http://localhost:6596/"
+var deemix_per string = "http://localhost:6595/"
 var arl string = ""
 var listenbrainz_api string = ""
 var listenbrainz_enabled bool = false
@@ -169,6 +170,9 @@ func Loadconfig(conf *config.Config) {
 	arl = conf.DeezerARL
 	if conf.DeemixTmp != "" {
 		deemix_tmp = conf.DeemixTmp
+	}
+	if conf.DeemixPersistent != "" {
+		deemix_per = conf.DeemixPersistent
 	}
 	listenbrainz_api = conf.ListenbrainzAuth
 	listenbrainz_enabled = conf.ListenbrainzEnabled
