@@ -7,25 +7,19 @@ import (
 	"navimix/auth"
 	"navimix/config"
 	"navimix/listenbrainz"
-	"strings"
-
-	//_ "navimix/internaldb"
 	"net/http"
+	"strings"
 )
 
 func main() {
-	//support.init_db()
-	//deemix.Login(api.Arl)
 	config := config.Load()
 	if config.Port == "" {
 		config.Port = "4534"
 	}
-	//deemix.Loadconfig(config)
 	api.Loadconfig(config)
 	listenbrainz.Loadconfig(config)
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":"+config.Port, nil)
-	//deemix.Config(config)
 }
 
 func handler(writer http.ResponseWriter, r *http.Request) {
