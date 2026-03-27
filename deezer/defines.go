@@ -13,7 +13,7 @@ type Album struct {
 	Year        string   `json:"release_date"`
 	Artist      Artist   `json:"artist"`
 	Duration    int      `json:"duration"`
-	Genres      Genres   `json:"genres,omitzero"`
+	Genres      Genres   `json:"genres"`
 	CoverSmall  string   `json:"cover_small"`
 	CoverMedium string   `json:"cover_medium"`
 	CoverBig    string   `json:"cover_big"`
@@ -52,7 +52,7 @@ type Artist struct {
 	Picture string `json:"picture_small"`
 }
 
-type Data struct {
+type Data struct { //Track
 	ID           int      `json:"id,omitempty"`
 	Title        string   `json:"title,omitempty"`
 	Name         string   `json:"name,omitempty"`

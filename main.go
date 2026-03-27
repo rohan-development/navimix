@@ -6,6 +6,7 @@ import (
 	"navimix/api"
 	"navimix/auth"
 	"navimix/config"
+	_ "navimix/db"
 	"navimix/listenbrainz"
 	"net/http"
 	"strings"

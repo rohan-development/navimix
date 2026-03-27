@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"navimix/db"
 	"navimix/deezer"
 	"navimix/types"
 	"net/http"
@@ -100,9 +101,17 @@ func populate_song(add_song types.Song, deezer_search deezer.Data) types.Song {
 	add_song.BitRate = 128
 	add_song.ContentType = "audio/mp3"
 	add_song.Suffix = "mp3"
-	// album := query_deezer_api("album/" + add_song.AlbumID)
-	// add_song.Year, _ = strconv.Atoi(album.Year[0:4])
-	// add_song.Genre = album.Genres.Data[0].Name
+	album, err := db.GetAlbum(add_song.AlbumID)
+	if err != nil {
+		album = deezer.GetAlbum(add_song.AlbumID)
+		db.AddAlbum(album)
+		//log.Println(err)
+		//log.Println("added album to db")
+	}
+	add_song.Year, _ = strconv.Atoi(album.Year[0:4])
+	if len(album.Genres.Data) != 0 {
+		add_song.Genre = album.Genres.Data[0].Name
+	}
 	add_song.Duration = deezer_search.Duration
 	add_song.SortName = strings.ToLower(add_song.Title)
 	add_song.Type = "music"
@@ -119,8 +128,15 @@ func populate_album(add_album types.Album, deezer_search deezer.Data) types.Albu
 	add_album.Parent = strconv.Itoa(deezer_search.Artist.ID)
 	add_album.MediaType = "album"
 	add_album.DisplayArtist = add_album.Artist
+	album, err := db.GetAlbum(add_album.ID)
+	if err != nil {
+		album = deezer.GetAlbum(add_album.ID)
+		db.AddAlbum(album)
+	}
 	// album := query_deezer_api("album/" + add_album.ID)
-	// add_album.Year, _ = strconv.Atoi(album.Year[0:4])
-	// add_album.Genre = album.Genres.Data[0].Name
+	add_album.Year, _ = strconv.Atoi(album.Year[0:4])
+	if len(album.Genres.Data) != 0 {
+		add_album.Genre = album.Genres.Data[0].Name
+	}
 	return add_album
 }

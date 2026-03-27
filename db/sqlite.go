@@ -18,7 +18,7 @@ func init() {
 	query := `
 CREATE TABLE IF NOT EXISTS tracks (
 	id INTEGER PRIMARY KEY,
-	deezer_id TEXT UNIQUE,
+	deezer_id INTEGER UNIQUE,
     title TEXT,
 	album TEXT,
 	artist TEXT,

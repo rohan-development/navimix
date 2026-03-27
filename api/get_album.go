@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"io"
+	"navimix/db"
 	"navimix/deezer"
 	"navimix/types"
 	"net/http"
@@ -19,7 +20,11 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 		io.Copy(writer, response)
 	} else {
 		var album types.Album
-		deezer_search := deezer.GetAlbum(id)
+		deezer_search, err := db.GetAlbum(id)
+		if err != nil {
+			deezer_search = deezer.GetAlbum(id)
+			db.AddAlbum(deezer_search)
+		}
 		album.ID = strconv.Itoa(deezer_search.ID)
 		album.Name = deezer_search.Name
 		if album.Name == "" {

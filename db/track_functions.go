@@ -1,33 +1,38 @@
 package db
 
-import "navimix/types"
+import (
+	"navimix/deezer"
+	"strconv"
+)
 
-func AddTrack(track types.Song) {
+func AddTrack(track deezer.Data) {
 	query := `
 	INSERT INTO tracks (deezer_id, title, album, artist,
 	albumID, duration) VALUES (?,?,?,?,?,?) ON CONFLICT(deezer_id) 
 	DO NOTHING
 	`
-	_, err := db.Exec(query, track.ID, track.Title, track.Album,
-		track.Artist, track.AlbumID, track.Duration)
+	_, err := db.Exec(query, track.ID, track.Title, track.Album.Name,
+		track.Artist.Name, strconv.Itoa(track.Album.ID), track.Duration)
 	check_err(err)
 }
 
-func GetTrack(deezer_id string) (types.Song, error) {
-	var t types.Song
+func GetTrack(deezer_id string) (deezer.Data, error) {
+	var t deezer.Data
+	var albumID string
 	err := db.QueryRow(`
         SELECT deezer_id, title, album, artist, albumID, duration
         FROM tracks WHERE deezer_id = ?
     `, deezer_id).Scan(
 		&t.ID,
 		&t.Title,
-		&t.Album,
-		&t.Artist,
-		&t.AlbumID,
+		&t.Album.Name,
+		&t.Artist.Name,
+		&albumID,
 		&t.Duration,
 	)
+	t.Album.ID, _ = strconv.Atoi(albumID)
 	if err == nil {
 		return t, nil
 	}
-	return types.Song{}, err
+	return deezer.Data{}, err
 }
