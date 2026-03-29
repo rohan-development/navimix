@@ -13,6 +13,7 @@ Current features (in addition your standard subsonic server) include:
 - Stream any album
 - Fetch cover art for above songs, albums
 - Find similar songs external to library in some clients through the getSimilar api function (unmodified)
+- Server side caching of deezer API requests
 
 Navimix acts as a translation integration layer between the deezer api, deemix, navidrome, and subsonic. It is designed to run on top of navidrome (or any compatible subsonic server) and add functionality. It is still very much under development, with many new features currently under development.
 
