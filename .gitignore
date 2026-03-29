@@ -1,7 +1,7 @@
 *.log
 *.exe
 *.toml
-*.db
+*.db*
 downloads/
 music/
 .DS_Store
