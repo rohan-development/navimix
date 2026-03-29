@@ -1,0 +1,5 @@
+package deezer
+
+func Crawl() {
+
+}

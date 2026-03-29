@@ -102,15 +102,22 @@ func populate_song(add_song types.Song, deezer_search deezer.Data) types.Song {
 	add_song.ContentType = "audio/mp3"
 	add_song.Suffix = "mp3"
 	album, err := db.GetAlbum(add_song.AlbumID)
-	if err != nil {
-		album = deezer.GetAlbum(add_song.AlbumID)
-		db.AddAlbum(album)
-		//log.Println(err)
-		//log.Println("added album to db")
+	if len(album.Year) != 0 {
+		add_song.Year, _ = strconv.Atoi(album.Year[0:4])
 	}
-	add_song.Year, _ = strconv.Atoi(album.Year[0:4])
 	if len(album.Genres.Data) != 0 {
 		add_song.Genre = album.Genres.Data[0].Name
+		var genre types.Genre
+		genre.Name = add_song.Genre
+		add_song.Genres = append(add_song.Genres, genre)
+	}
+	if err != nil {
+		go func(albumID string) {
+			album = deezer.GetAlbum(albumID)
+			db.AddAlbum(album)
+		}(add_song.AlbumID)
+		//log.Println(err)
+		//log.Println("added album to db")
 	}
 	add_song.Duration = deezer_search.Duration
 	add_song.SortName = strings.ToLower(add_song.Title)
@@ -130,11 +137,17 @@ func populate_album(add_album types.Album, deezer_search deezer.Data) types.Albu
 	add_album.DisplayArtist = add_album.Artist
 	album, err := db.GetAlbum(add_album.ID)
 	if err != nil {
-		album = deezer.GetAlbum(add_album.ID)
-		db.AddAlbum(album)
+		go func(albumID string) {
+			album = deezer.GetAlbum(albumID)
+			db.AddAlbum(album)
+		}(add_album.ID)
+		//album = deezer.GetAlbum(add_album.ID)
+		//db.AddAlbum(album)
 	}
 	// album := query_deezer_api("album/" + add_album.ID)
-	add_album.Year, _ = strconv.Atoi(album.Year[0:4])
+	if len(album.Year) != 0 {
+		add_album.Year, _ = strconv.Atoi(album.Year[0:4])
+	}
 	if len(album.Genres.Data) != 0 {
 		add_album.Genre = album.Genres.Data[0].Name
 	}
