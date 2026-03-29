@@ -5,12 +5,16 @@ import (
 )
 
 func AddAlbum(album deezer.Album) {
+	writeMutex.Lock()
+	defer writeMutex.Unlock()
 	query := `
 	INSERT INTO albums (deezer_id, title, artist, genre,
 	year) VALUES (?,?,?,?,?) ON CONFLICT(deezer_id)
 	DO NOTHING
 	`
 	if len(album.Genres.Data) > 0 {
+		db.Exec("PRAGMA journal_mode=WAL;")
+		db.Exec("PRAGMA busy_timeout=5000;") // wait up to 5 seconds if locked
 		_, err := db.Exec(query, album.ID, album.Name,
 			album.Artist.Name, album.Genres.Data[0].Name, album.Year)
 		check_err(err)

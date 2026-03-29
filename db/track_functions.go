@@ -6,11 +6,15 @@ import (
 )
 
 func AddTrack(track deezer.Data) {
+	writeMutex.Lock()
+	defer writeMutex.Unlock()
 	query := `
 	INSERT INTO tracks (deezer_id, title, album, artist,
 	albumID, duration) VALUES (?,?,?,?,?,?) ON CONFLICT(deezer_id) 
 	DO NOTHING
 	`
+	db.Exec("PRAGMA journal_mode=WAL;")
+	db.Exec("PRAGMA busy_timeout=5000;") // wait up to 5 seconds if locked
 	_, err := db.Exec(query, track.ID, track.Title, track.Album.Name,
 		track.Artist.Name, strconv.Itoa(track.Album.ID), track.Duration)
 	check_err(err)

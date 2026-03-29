@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"sync"
 
 	_ "modernc.org/sqlite"
 )
@@ -9,6 +10,7 @@ import (
 const db_name = "navimix.db"
 
 var db *sql.DB
+var writeMutex sync.Mutex
 
 func init() {
 	var err error
