@@ -1,5 +1,0 @@
-package deezer
-
-func Crawl() {
-
-}
