@@ -13,21 +13,58 @@ import (
 
 func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 	id := req.URL.Query().Get("id")
+	var album types.Album
 	if !is_integer(id) {
 		//in library, forward
-		upstream := navidrome_base + req.URL.Path[1:] + "?" + req.URL.RawQuery
-		writer, response := Passthrough_proxy(writer, req, true, upstream)
-		defer response.Close()
-		io.Copy(writer, response)
+		// upstream := navidrome_base + req.URL.Path[1:] + "?" + req.URL.RawQuery
+		// writer, response := Passthrough_proxy(writer, req, true, upstream)
+		// defer response.Close()
+		// io.Copy(writer, response)
+
+		local_album := Get_subsonic_response(writer, req, false).Album
+		deezer_search1 := deezer.Search(local_album.Name+" "+local_album.Artist, "album")
+		//var deezer_album deezer.AlbumRef
+		if len(deezer_search1) > 0 {
+			deezer_search, err := db.GetAlbum(strconv.Itoa(deezer_search1[0].ID))
+			deezer_search = deezer.GetAlbum(strconv.Itoa(deezer_search1[0].ID))
+			if err != nil {
+				db.AddAlbum(deezer_search)
+			}
+			album = deezer_to_album(deezer_search)
+			for i := 0; i < album.SongCount; i += 1 {
+				var add_song types.Song
+				add_song.Track = i + 1
+				overide := false
+				for j := 0; j < len(local_album.Tracks); j += 1 {
+					if local_album.Tracks[j].Track == add_song.Track {
+						album.Tracks = append(album.Tracks, local_album.Tracks[j])
+						overide = true
+						break
+					}
+				}
+
+				if !overide {
+					add_song = populate_song(add_song, deezer_search.Tracks.Data[i])
+					add_song.Parent = id
+					add_song.AlbumID = id
+					album.Tracks = append(album.Tracks, add_song)
+
+				}
+
+			}
+
+		}
+		local_album.Tracks = album.Tracks
+		album = local_album
+
 	} else {
-		var album types.Album
+		//var album types.Album
 		deezer_search, err := db.GetAlbum(id)
 		deezer_search = deezer.GetAlbum(id)
 		if err != nil {
 			db.AddAlbum(deezer_search)
 		}
-		album.ID = strconv.Itoa(deezer_search.ID)
-		album.Name = deezer_search.Name
+		album = deezer_to_album(deezer_search)
 		if album.Name == "" {
 			upstream := navidrome_base + req.URL.Path[1:] + "?" + req.URL.RawQuery
 			writer, response := Passthrough_proxy(writer, req, true, upstream)
@@ -35,16 +72,6 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 			io.Copy(writer, response)
 			return
 		}
-		album.Artist = deezer_search.Artist.Name
-		album.Parent = strconv.Itoa(deezer_search.Artist.ID)
-		album.Duration = deezer_search.Duration
-		album.SongCount = len(deezer_search.Tracks.Data)
-		album.MediaType = "album"
-		album.DisplayArtist = album.Artist
-		album.Year, _ = strconv.Atoi(deezer_search.Year[0:4])
-		album.Genre = deezer_search.Genres.Data[0].Name
-		album.CoverArt = album.ID
-
 		alb_url := build_search_URL(req, album, "search2.view")
 		alb_req, err := http.NewRequest("GET", alb_url, nil)
 		check_err(err)
@@ -64,7 +91,6 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 			overide := false
 
 			for j := 0; j < len(local_album.Tracks); j += 1 {
-
 				if local_album.Tracks[j].Track == add_song.Track {
 					local_album.Tracks[j].AlbumID = id
 					local_album.Tracks[j].Parent = id
@@ -80,14 +106,15 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 			}
 
 		}
-		var embedded EmbeddedResponse
-		embedded.Subsonic = Get_subsonic_response(writer, req, true)
-		embedded.Subsonic.StatusCode = "ok"
-		embedded.Subsonic.Error = SubsonicError{}
-		embedded.Subsonic.Album = album
-		//embedded.Subsonic.StatusCode = req.URL.Path[6:]
-		json.NewEncoder(writer).Encode(embedded)
 	}
+	var embedded EmbeddedResponse
+	embedded.Subsonic = Get_subsonic_response(writer, req, true)
+	embedded.Subsonic.StatusCode = "ok"
+	embedded.Subsonic.Error = SubsonicError{}
+	embedded.Subsonic.Album = album
+	//embedded.Subsonic.StatusCode = req.URL.Path[6:]
+	json.NewEncoder(writer).Encode(embedded)
+
 }
 
 func build_search_URL(req *http.Request, album types.Album, method string) string {
@@ -110,4 +137,20 @@ func build_search_URL(req *http.Request, album types.Album, method string) strin
 	}
 
 	return (navidrome_base + "rest/" + method + "?" + params.Encode())
+}
+
+func deezer_to_album(deezer_search deezer.Album) types.Album {
+	var album types.Album
+	album.ID = strconv.Itoa(deezer_search.ID)
+	album.Name = deezer_search.Name
+	album.Artist = deezer_search.Artist.Name
+	album.Parent = strconv.Itoa(deezer_search.Artist.ID)
+	album.Duration = deezer_search.Duration
+	album.SongCount = len(deezer_search.Tracks.Data)
+	album.MediaType = "album"
+	album.DisplayArtist = album.Artist
+	album.Year, _ = strconv.Atoi(deezer_search.Year[0:4])
+	album.Genre = deezer_search.Genres.Data[0].Name
+	album.CoverArt = album.ID
+	return album
 }
