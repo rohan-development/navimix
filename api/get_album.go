@@ -7,6 +7,7 @@ import (
 	"navimix/deezer"
 	"navimix/types"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -43,11 +44,41 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 		album.Year, _ = strconv.Atoi(deezer_search.Year[0:4])
 		album.Genre = deezer_search.Genres.Data[0].Name
 		album.CoverArt = album.ID
+
+		alb_url := build_search_URL(req, album, "search2.view")
+		alb_req, err := http.NewRequest("GET", alb_url, nil)
+		check_err(err)
+		local_album_search := Get_subsonic_response(writer, alb_req, false).SearchResult2.
+			Album
+		var local_album types.Album
+		if len(local_album_search) != 0 {
+			//local_album_id := local_album_search[0].ID
+			alb_url = build_search_URL(req, local_album_search[0], "getAlbum.view")
+			//fmt.Fprint(writer, alb_url)
+			alb_req, _ = http.NewRequest("GET", alb_url, nil)
+			local_album = Get_subsonic_response(writer, alb_req, false).Album
+		}
 		for i := 0; i < album.SongCount; i += 1 {
 			var add_song types.Song
 			add_song.Track = i + 1
-			album.Tracks = append(album.Tracks,
-				populate_song(add_song, deezer_search.Tracks.Data[i]))
+			overide := false
+
+			for j := 0; j < len(local_album.Tracks); j += 1 {
+
+				if local_album.Tracks[j].Track == add_song.Track {
+					local_album.Tracks[j].AlbumID = id
+					local_album.Tracks[j].Parent = id
+					album.Tracks = append(album.Tracks, local_album.Tracks[j])
+					overide = true
+					break
+				}
+			}
+
+			if !overide {
+				album.Tracks = append(album.Tracks,
+					populate_song(add_song, deezer_search.Tracks.Data[i]))
+			}
+
 		}
 		var embedded EmbeddedResponse
 		embedded.Subsonic = Get_subsonic_response(writer, req, true)
@@ -57,4 +88,26 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 		//embedded.Subsonic.StatusCode = req.URL.Path[6:]
 		json.NewEncoder(writer).Encode(embedded)
 	}
+}
+
+func build_search_URL(req *http.Request, album types.Album, method string) string {
+	params := url.Values{}
+	params.Set("u", req.URL.Query().Get("u"))
+	params.Set("p", req.URL.Query().Get("p"))
+	params.Set("t", req.URL.Query().Get("t"))
+	params.Set("s", req.URL.Query().Get("s"))
+	params.Set("v", req.URL.Query().Get("v"))
+	params.Set("c", req.URL.Query().Get("c"))
+
+	params.Set("f", "json")
+	params.Set("artistCount", "0")
+	params.Set("albumCount", "1")
+	params.Set("songCount", "0")
+	if method == "search2.view" {
+		params.Set("query", album.Name+" "+album.Artist)
+	} else if method == "getAlbum.view" {
+		params.Set("id", album.ID)
+	}
+
+	return (navidrome_base + "rest/" + method + "?" + params.Encode())
 }
