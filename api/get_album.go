@@ -47,6 +47,9 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 					add_song = populate_song(add_song, deezer_search.Tracks.Data[i])
 					add_song.Parent = id
 					add_song.AlbumID = id
+					if add_song.DiscNumber == 0 {
+						add_song.DiscNumber = 1
+					}
 					album.Tracks = append(album.Tracks, add_song)
 
 				}
@@ -101,8 +104,11 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 			}
 
 			if !overide {
-				album.Tracks = append(album.Tracks,
-					populate_song(add_song, deezer_search.Tracks.Data[i]))
+				add_song = populate_song(add_song, deezer_search.Tracks.Data[i])
+				if add_song.DiscNumber == 0 {
+					add_song.DiscNumber = 1
+				}
+				album.Tracks = append(album.Tracks, add_song)
 			}
 
 		}
