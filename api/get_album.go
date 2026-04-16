@@ -22,7 +22,9 @@ func GetAlbum(writer http.ResponseWriter, req *http.Request) {
 		// io.Copy(writer, response)
 
 		local_album := Get_subsonic_response(writer, req, false).Album
-		deezer_search1 := deezer.Search(local_album.Name+" "+local_album.Artist, "album")
+		deezer_search1 := deezer.Search(local_album.Name+" "+
+			local_album.Artists[0].Name, "album")
+		//fmt.Fprint(writer, local_album.Name+" "+local_album.Artists[0].Name)
 		//var deezer_album deezer.AlbumRef
 		if len(deezer_search1) > 0 {
 			deezer_search, err := db.GetAlbum(strconv.Itoa(deezer_search1[0].ID))
